@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chat</title>
+        <style>
+            #chatbox {
+                height: 300px;
+                width: 500px;
+                border: 1px solid black;
+                overflow: auto;
+            }
+            #message {
+                width: 400px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="chatbox"></div>
+        <input
+            id="message"
+            type="text"
+        />
+        <button id="send">Send</button>
+
+        <script>
+            var ws = new WebSocket("ws://localhost:8080/ws");
+
+            ws.onmessage = function (event) {
+                var chatbox = document.getElementById("chatbox");
+                chatbox.innerHTML += event.data + "<br>";
+                chatbox.scrollTop = chatbox.scrollHeight;
+            };
+
+            document.getElementById("send").onclick = function () {
+                var message = document.getElementById("message").value;
+                ws.send(message);
+                document.getElementById("message").value = "";
+            };
+        </script>
+    </body>
+</html>
