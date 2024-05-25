@@ -9,11 +9,20 @@ func servePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	roomManager := newRoomManager()
+
 	room := newRoom()
 	go room.runRoom()
 
 	http.HandleFunc("/", servePage)
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		roomName := r.URL.Query().Get("room")
+		if roomName == "" {
+			http.Error(w, "Room name is required", http.StatusBadRequest)
+			return
+		}
+
+		room := roomManager.getRoom(roomName)
 		serveWs(room, w, r)
 	})
 
