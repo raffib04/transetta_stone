@@ -1,17 +1,18 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/gorilla/websocket"
 )
 
 type Client struct {
-	room *Room
-
-	conn *websocket.Conn
-
-	send chan []byte
+	username string
+	language string
+	room     *Room
+	conn     *websocket.Conn
+	send     chan []byte
 }
 
 var upgrader = websocket.Upgrader{
@@ -32,7 +33,31 @@ func (c *Client) intakeMessages() {
 			break
 		}
 
-		c.room.broadcast <- message
+		var msg map[string]string
+		json.Unmarshal(message, &msg)
+
+		if username, ok := msg["username"]; ok {
+			c.username = username
+		}
+
+		if language, ok := msg["language"]; ok {
+			c.language = language
+		}
+
+		if text, ok := msg["message"]; ok {
+			jsonMsg := make(map[string]string)
+
+			jsonMsg["username"] = c.username
+			jsonMsg["language"] = c.language
+			jsonMsg["message"] = text
+
+			data, err := json.Marshal(jsonMsg)
+			if err != nil {
+				break
+			}
+
+			c.room.broadcast <- data
+		}
 	}
 
 }

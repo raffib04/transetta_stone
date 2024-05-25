@@ -16,6 +16,17 @@ func newRoom() *Room {
 	}
 }
 
+func (room *Room) translateMessage(message []byte) {
+	for client := range room.clients {
+		select {
+		case client.send <- message:
+		default:
+			delete(room.clients, client)
+			close(client.send)
+		}
+	}
+}
+
 func (room *Room) runRoom() {
 	for {
 		select {
@@ -27,14 +38,7 @@ func (room *Room) runRoom() {
 				close(client.send)
 			}
 		case message := <-room.broadcast:
-			for client := range room.clients {
-				select {
-				case client.send <- message:
-				default:
-					delete(room.clients, client)
-					close(client.send)
-				}
-			}
+			room.translateMessage(message)
 		}
 	}
 }
