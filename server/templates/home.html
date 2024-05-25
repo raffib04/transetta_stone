@@ -27,8 +27,14 @@
                 <option value="pl">Polish</option>
                 <option value="zh">Chinese</option>
                 <option value="ko">Korean</option>
+                <option value="ja">Japanese</option>
                 <!-- Add more languages as needed -->
             </select>
+            <input
+                id="room"
+                type="text"
+                placeholder = "Enter room name"
+            />
             <button id="enter">Enter Chat</button>
         </div>
         <div
@@ -47,15 +53,16 @@
             document.getElementById("enter").onclick = function () {
                 var username = document.getElementById("username").value;
                 var language = document.getElementById("language").value;
-                if (username && language) {
+                var room = document.getElementById("room").value;
+                if (username && language && room) {
                     document.getElementById("login").style.display = "none";
                     document.getElementById("chat").style.display = "block";
-                    startChat(username, language);
+                    startChat(username, language, room);
                 }
             };
 
-            function startChat(username, language) {
-                var ws = new WebSocket("ws://localhost:8080/ws");
+            function startChat(username, language, room) {
+                var ws = new WebSocket("ws://localhost:8080/ws?room=" + room);
 
                 ws.onopen = function () {
                     ws.send(
