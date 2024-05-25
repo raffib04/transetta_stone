@@ -33,7 +33,7 @@
             <input
                 id="room"
                 type="text"
-                placeholder = "Enter room name"
+                placeholder="Enter room name"
             />
             <button id="enter">Enter Chat</button>
         </div>
@@ -47,6 +47,7 @@
                 type="text"
             />
             <button id="send">Send</button>
+            <button id="showRooms">Show Rooms</button>
         </div>
 
         <script>
@@ -59,6 +60,10 @@
                     document.getElementById("chat").style.display = "block";
                     startChat(username, language, room);
                 }
+            };
+
+            document.getElementById("showRooms").onclick = function () {
+                var ws = new WebSocket("ws://localhost:8080/ws/rooms");
             };
 
             function startChat(username, language, room) {
@@ -83,7 +88,7 @@
                 };
 
                 function sendMessage() {
-                  var message = document.getElementById("message").value;
+                    var message = document.getElementById("message").value;
                     ws.send(
                         JSON.stringify({
                             username: username,
@@ -96,12 +101,14 @@
 
                 document.getElementById("send").onclick = sendMessage;
 
-                document.getElementById("message").addEventListener("keydown", function (event) {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    sendMessage();
-                  }
-                })
+                document
+                    .getElementById("message")
+                    .addEventListener("keydown", function (event) {
+                        if (event.key === "Enter") {
+                            event.preventDefault();
+                            sendMessage();
+                        }
+                    });
             }
         </script>
     </body>

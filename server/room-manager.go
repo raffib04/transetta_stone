@@ -19,3 +19,11 @@ func (rm *RoomManager) getRoom(name string) *Room {
 	}
 	return room
 }
+
+func (rm *RoomManager) listActiveRooms() []string {
+	var rooms []string
+	for roomName := range rm.rooms {
+		rooms = append(rooms, roomName)
+	}
+	return rooms
+}
