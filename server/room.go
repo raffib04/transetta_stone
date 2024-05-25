@@ -1,5 +1,14 @@
 package main
 
+import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/translate"
+)
+
 type Room struct {
 	clients   map[*Client]bool
 	broadcast chan []byte
@@ -17,7 +26,34 @@ func newRoom() *Room {
 }
 
 func (room *Room) translateMessage(message []byte) {
+
+	var translateSession *translate.Translate = translate.New(session.Must(session.NewSession(&aws.Config{
+		Region: aws.String("us-east-2"),
+	})))
+
+	var msg map[string]string
+	json.Unmarshal(message, &msg)
+	original_language := msg["language"]
+
 	for client := range room.clients {
+
+		receiver_language := client.language
+		fmt.Println("Receiver Language: ", receiver_language)
+
+		response, err := translateSession.Text(&translate.TextInput{
+			SourceLanguageCode: aws.String(original_language),
+			TargetLanguageCode: aws.String(receiver_language),
+			Text:               aws.String(msg["message"]),
+		})
+
+		if err != nil {
+			fmt.Println("Error translating message: ", err)
+		}
+
+		message = []byte(*response.TranslatedText)
+
+		fmt.Println("Message: ", string(message))
+
 		select {
 		case client.send <- message:
 		default:
