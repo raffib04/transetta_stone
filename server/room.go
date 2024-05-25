@@ -26,37 +26,52 @@ func newRoom() *Room {
 }
 
 func (room *Room) translateMessage(message []byte) {
-
-	var translateSession *translate.Translate = translate.New(session.Must(session.NewSession(&aws.Config{
+	// Initialize translation session once
+	translateSession := translate.New(session.Must(session.NewSession(&aws.Config{
 		Region: aws.String("us-east-2"),
 	})))
 
 	var msg map[string]string
-	json.Unmarshal(message, &msg)
-	original_language := msg["language"]
+
+	err := json.Unmarshal(message, &msg)
+	if err != nil {
+		fmt.Println("Error unmarshalling message: ", err)
+		return
+	}
+
+	originalLanguage := msg["language"]
+	originalMessage := msg["message"]
+	senderUsername := msg["username"]
 
 	for client := range room.clients {
+		receiverLanguage := client.language
 
-		receiver_language := client.language
-		fmt.Println("Receiver Language: ", receiver_language)
-
+		// Translate the message
 		response, err := translateSession.Text(&translate.TextInput{
-			SourceLanguageCode: aws.String(original_language),
-			TargetLanguageCode: aws.String(receiver_language),
-			Text:               aws.String(msg["message"]),
+			SourceLanguageCode: aws.String(originalLanguage),
+			TargetLanguageCode: aws.String(receiverLanguage),
+			Text:               aws.String(originalMessage),
 		})
-
 		if err != nil {
 			fmt.Println("Error translating message: ", err)
+			continue
 		}
 
-		message = []byte(*response.TranslatedText)
+		translatedMessage := *response.TranslatedText
 
-		fmt.Println("Message: ", string(message))
+		//send the translated message to the client as json
+		jsonMsg := make(map[string]string)
+		jsonMsg["username"] = senderUsername
+		jsonMsg["message"] = translatedMessage
 
+		data, err := json.Marshal(jsonMsg)
+		if err != nil {
+			break
+		}
 		select {
-		case client.send <- message:
+		case client.send <- data:
 		default:
+			// Properly handle client disconnection
 			delete(room.clients, client)
 			close(client.send)
 		}
