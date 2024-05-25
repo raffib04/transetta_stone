@@ -55,7 +55,7 @@
             };
 
             function startChat(username, language) {
-                var ws = new WebSocket("ws://10.105.210.1:8080/ws");
+                var ws = new WebSocket("ws://localhost:8080/ws");
 
                 ws.onopen = function () {
                     ws.send(
@@ -75,8 +75,8 @@
                     chatbox.scrollTop = chatbox.scrollHeight;
                 };
 
-                document.getElementById("send").onclick = function () {
-                    var message = document.getElementById("message").value;
+                function sendMessage() {
+                  var message = document.getElementById("message").value;
                     ws.send(
                         JSON.stringify({
                             username: username,
@@ -85,7 +85,16 @@
                         })
                     );
                     document.getElementById("message").value = "";
-                };
+                }
+
+                document.getElementById("send").onclick = sendMessage;
+
+                document.getElementById("message").addEventListener("keydown", function (event) {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    sendMessage();
+                  }
+                })
             }
         </script>
     </body>

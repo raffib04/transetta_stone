@@ -17,5 +17,5 @@ func main() {
 		serveWs(room, w, r)
 	})
 
-	http.ListenAndServe("10.105.210.1:8080", nil)
+	http.ListenAndServe("localhost:8080", nil)
 }
