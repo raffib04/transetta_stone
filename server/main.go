@@ -5,10 +5,6 @@ import (
 	"net/http"
 )
 
-func servePage(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "templates/home.html")
-}
-
 func main() {
 	roomManager := newRoomManager()
 
