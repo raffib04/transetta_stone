@@ -89,7 +89,7 @@ func (room *Room) runRoom() {
 				close(client.send)
 			}
 		case message := <-room.broadcast:
-			room.translateMessage(message)
+			go room.translateMessage(message)
 		}
 	}
 }
