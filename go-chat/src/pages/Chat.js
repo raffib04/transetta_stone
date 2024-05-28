@@ -4,6 +4,7 @@ const Chat = ({ username, language, room }) => {
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
     const ws = useRef(null);
+    const messagesEndRef = useRef(null);
 
     useEffect(() => {
         ws.current = new WebSocket(`ws://localhost:8080/ws?room=${room}`);
@@ -21,6 +22,12 @@ const Chat = ({ username, language, room }) => {
             ws.current.close();
         };
     }, [room, username, language]);
+
+    useEffect(() => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }, [messages])
 
     const sendMessage = () => {
         if (message) {
@@ -40,10 +47,19 @@ const Chat = ({ username, language, room }) => {
                 }}
             >
                 {messages.map((msg, index) => (
-                    <div key={index}>
-                        {msg.username}: {msg.message}
+                    <div
+                        key={index}
+                        className={`ml-4 my-2 p-2 rounded-lg ${msg.username === username ? 'bg-blue-100 self-end' : 'bg-gray-100'}`}
+                        style={{
+                            textAlign: msg.username === username ? "right" : "left",
+                            alignSelf: msg.username === username ? "flex-end" : "flex-start",
+                            marginLeft: msg.username === username ? "auto" : "0"
+                        }}
+                    >
+                        <strong>{msg.username}</strong>: {msg.message}
                     </div>
                 ))}
+                <div ref={messagesEndRef} />
             </div>
             <input
                 type='text'
