@@ -55,8 +55,9 @@ const Chat = ({ username, language, room }) => {
                     }
                 }}
                 style={{ width: "400px" }}
+                className="border border-gray-400 rounded-lg p-2 m-2"
             />
-            <button onClick={sendMessage}>Send</button>
+            <button onClick={sendMessage} className="border border-gray-400 rounded-lg p-2 m-2">Send</button>
             <button
                 onClick={() => {
                     fetch("http://localhost:8080/rooms")
@@ -68,6 +69,7 @@ const Chat = ({ username, language, room }) => {
                             console.error("Error fetching rooms:", error);
                         });
                 }}
+                className="border border-gray-400 rounded-lg p-2 m-2"
             >
                 Show Rooms
             </button>
