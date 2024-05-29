@@ -29,9 +29,10 @@ func (c *Client) intakeMessages() {
 	}()
 
 	for {
-		_, message, err := c.conn.ReadMessage()
+		message_type, message, err := c.conn.ReadMessage()
 		if err != nil {
 			log.Println("Error reading message:", err)
+			log.Println("Message type:", message_type)
 			break
 		}
 
