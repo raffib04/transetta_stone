@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import LobbyCard from "../components/LobbyCard";
+import { fetchActiveRooms } from "../utils/ActiveRooms"; // Adjust the path as necessary
 
 const Login = ({ onLogin }) => {
     const [username, setUsername] = useState("");
@@ -14,23 +15,11 @@ const Login = ({ onLogin }) => {
     };
 
     useEffect(() => {
-        fetch("http://localhost:8080/rooms")
-            .then((res) => {
-                if (!res.ok) {
-                    throw new Error(
-                        "Network response was not ok " + res.statusText
-                    );
-                }
-                return res.json();
-            })
-            .then((data) => {
-                if (Array.isArray(data)) {
-                    setActiveRooms(data);
-                } else {
-                    setActiveRooms([]);
-                }
-            })
-            .catch((error) => console.error("Error fetching rooms:", error));
+        const loadRooms = async () => {
+            const rooms = await fetchActiveRooms();
+            setActiveRooms(rooms);
+        };
+        loadRooms();
     }, []);
 
     return (

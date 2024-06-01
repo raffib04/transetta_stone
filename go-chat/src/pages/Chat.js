@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
+import { fetchActiveRooms } from "../utils/ActiveRooms";
+import LobbyCard from "../components/LobbyCard";
 
 const Chat = ({ username, language, room }) => {
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
+    const [activeRooms, setActiveRooms] = useState([]);
+    const [showActiveRooms, setShowActiveRooms] = useState(false);
     const ws = useRef(null);
     const messagesEndRef = useRef(null);
 
@@ -34,6 +38,15 @@ const Chat = ({ username, language, room }) => {
             ws.current.send(JSON.stringify({ username, language, message }));
             setMessage("");
         }
+    };
+
+    const getRooms = async () => {
+        if (!showActiveRooms) {
+            const rooms = await fetchActiveRooms();
+            setActiveRooms(rooms);
+                
+        }
+        setShowActiveRooms(!showActiveRooms);
     };
 
     return (
@@ -75,20 +88,27 @@ const Chat = ({ username, language, room }) => {
             />
             <button onClick={sendMessage} className="border border-gray-400 rounded-lg p-2 m-2">Send</button>
             <button
-                onClick={() => {
-                    fetch("http://localhost:8080/rooms")
-                        // .then((response) => response.json())
-                        .then((data) => {
-                            console.log(data.body);
-                        })
-                        .catch((error) => {
-                            console.error("Error fetching rooms:", error);
-                        });
-                }}
+                onClick={getRooms}
                 className="border border-gray-400 rounded-lg p-2 m-2"
             >
-                Show Rooms
+                {showActiveRooms ? "Hide Rooms" : "Show Rooms"}
             </button>
+            {showActiveRooms && (
+                <div>
+                    <h2 style={{ margin: "10px" }}>Active Rooms</h2>
+                    {activeRooms.length > 0 ? (
+                        activeRooms.map((room) => (
+                            <LobbyCard
+                                key={room.roomName}
+                                name={room.roomName}
+                                numOfUsers={room.numClients}
+                            />
+                        ))
+                    ) : (
+                        <p>No active rooms available.</p>
+                    )}
+                </div>
+            )}
         </div>
     );
 };
