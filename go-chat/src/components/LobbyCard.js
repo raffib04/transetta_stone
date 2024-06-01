@@ -1,8 +1,8 @@
 import React from "react";
 
-const LobbyCard = ({ name, numOfUsers }) => {
+const LobbyCard = ({ name, numOfUsers, onClick, currentRoom }) => {
     return (
-        <div
+        <button
             className='card'
             style={{
                 background: "white",
@@ -12,11 +12,14 @@ const LobbyCard = ({ name, numOfUsers }) => {
                 margin: "10px",
                 boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                 width: "200px",
+                textAlign: "left",
+                fontWeight: currentRoom ? "bold" : "normal",
             }}
+            onClick={() => onClick(name)}
         >
             <h2>{name}</h2>
             <p>Number of Users: {numOfUsers}</p>
-        </div>
+        </button>
     );
 };
 

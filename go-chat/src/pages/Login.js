@@ -28,6 +28,12 @@ const Login = ({ onLogin }) => {
     }
   };
 
+  const handleRoomSelect = (selectedRoom) => {
+    setRoom(selectedRoom);
+    // Automatically submit the form when a room is selected
+    handleSubmit();
+  };
+
   return (
     <div>
       <input
@@ -43,12 +49,12 @@ const Login = ({ onLogin }) => {
         style={inputStyle}
       >
         <option value="en">English</option>
-        <option value="es">Spanish</option>
-        <option value="pl">Polish</option>
         <option value="zh">Chinese</option>
-        <option value="ko">Korean</option>
-        <option value="ja">Japanese</option>
         <option value="fr">French</option>
+        <option value="ja">Japanese</option>
+        <option value="ko">Korean</option>
+        <option value="pl">Polish</option>
+        <option value="es">Spanish</option>
       </select>
 
       <input
@@ -72,6 +78,8 @@ const Login = ({ onLogin }) => {
             key={room.roomName}
             name={room.roomName}
             numOfUsers={room.numClients}
+            onClick={handleRoomSelect}
+            currentRoom={false}
           />
         ))
       ) : (

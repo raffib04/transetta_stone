@@ -1,3 +1,4 @@
+// Chat.js
 import React, { useState, useEffect, useRef } from "react";
 import { fetchActiveRooms } from "../utils/ActiveRooms";
 import LobbyCard from "../components/LobbyCard";
@@ -7,12 +8,13 @@ const Chat = ({ username, language, room }) => {
     const [message, setMessage] = useState("");
     const [activeRooms, setActiveRooms] = useState([]);
     const [showActiveRooms, setShowActiveRooms] = useState(false);
+    const [selectedRoom, setSelectedRoom] = useState("");
     const ws = useRef(null);
     const messagesEndRef = useRef(null);
 
     useEffect(() => {
         ws.current = new WebSocket(
-        `${process.env.REACT_APP_BACKEND_URL_WEBSOCKET}/ws?room=${room}`
+        `${process.env.REACT_APP_BACKEND_URL_WEBSOCKET}/ws?room=${selectedRoom || room}`
         );
 
         ws.current.onopen = () => {
@@ -27,7 +29,7 @@ const Chat = ({ username, language, room }) => {
         return () => {
         ws.current.close();
         };
-    }, [room, username, language]);
+    }, [selectedRoom, room, username, language]);
 
     useEffect(() => {
         if (messagesEndRef.current) {
@@ -49,6 +51,11 @@ const Chat = ({ username, language, room }) => {
                 
         }
         setShowActiveRooms(!showActiveRooms);
+    };
+
+    const handleRoomSelect = (selectedRoomName) => {
+        setSelectedRoom(selectedRoomName);
+        setShowActiveRooms(false);
     };
 
     return (
@@ -106,11 +113,13 @@ const Chat = ({ username, language, room }) => {
                 <div>
                     <h2 style={{ margin: "10px" }}>Active Rooms</h2>
                     {activeRooms.length > 0 ? (
-                        activeRooms.map((room) => (
+                        activeRooms.map((r) => (
                             <LobbyCard
-                                key={room.roomName}
-                                name={room.roomName}
-                                numOfUsers={room.numClients}
+                                key={r.roomName}
+                                name={r.roomName}
+                                numOfUsers={r.numClients}
+                                onClick={handleRoomSelect}
+                                currentRoom={selectedRoom ? r.roomName === selectedRoom : r.roomName === room} // Compare room name with current room
                             />
                         ))
                     ) : (
