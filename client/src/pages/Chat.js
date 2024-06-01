@@ -37,6 +37,30 @@ const Chat = ({ username, language, room }) => {
         }
     }, [messages]);
 
+    useEffect(() => {
+      const fetchMessages = async () => {
+        try {
+          const response = await fetch(
+            `${process.env.REACT_APP_BACKEND_URL}/getMessages?room=${selectedRoom || room}&language=${language}`
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch messages");
+          }
+  
+          const data = await response.json();
+          console.log("Response JSON:", data); // Log the parsed JSON
+  
+          // Ensure data is an array before setting it to state
+          setMessages(Array.isArray(data) ? data : []);
+        } catch (error) {
+          console.error("Error fetching messages:", error);
+          setMessages([]);
+        }
+      };
+  
+      fetchMessages();
+    }, [selectedRoom, room]);
+
     const sendMessage = () => {
         if (message) {
         ws.current.send(JSON.stringify({ username, language, message }));

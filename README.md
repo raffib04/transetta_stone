@@ -17,7 +17,7 @@ The project consists of three main components: the frontend, the backend, and th
 
 We use Go’s concurrency features to provide a scalable websocket server that can handle multiple chat rooms and users. We also use Go’s channels to communicate between the websocket server and the translation service. The translation service is a separate Go routine that sends messages to AWS Translate and receives the translated messages back. The translated messages are then sent back to the websocket server and broadcasted to the chat room.
 
-The front end is hosted on AWS Amplify, and the backend is hosted on an EC2 instance. 
+The front end is hosted locally, and the backend is hosted through ECS, ECR, and Fargate. The translation service is hosted on an EC2 instance.
 
 
 ## Implementation

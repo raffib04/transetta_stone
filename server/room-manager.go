@@ -1,6 +1,11 @@
 package main
 
-import "encoding/json"
+import (
+	"database/sql"
+	"encoding/json"
+	"fmt"
+	"time"
+)
 
 type RoomManager struct {
 	rooms map[string]*Room
@@ -13,12 +18,36 @@ func newRoomManager() *RoomManager {
 }
 
 func (rm *RoomManager) getRoom(name string) *Room {
+
 	room, exists := rm.rooms[name]
+	var result sql.Result
+	var err error
+
 	if !exists {
-		room = newRoom()
+
+		result, err = db.Exec("INSERT INTO rooms (name, created_at) VALUES (?, ?);", name, time.Now())
+
+		if err != nil {
+			fmt.Println("Error inserting room into database: ", err)
+			return nil
+		}
+
+		room_id, err := result.LastInsertId()
+
+		if err != nil {
+			fmt.Println("Error getting room id: ", err)
+			return nil
+		}
+
+		id := int(room_id)
+
+		room = newRoom(id)
 		rm.rooms[name] = room
 		go room.runRoom()
 	}
+
+	room.getMessages()
+
 	return room
 }
 
