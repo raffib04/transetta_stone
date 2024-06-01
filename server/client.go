@@ -19,6 +19,9 @@ type Client struct {
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
 }
 
 // intakes messages from the client and sends them to the room's broadcast channel

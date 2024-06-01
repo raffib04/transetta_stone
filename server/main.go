@@ -11,10 +11,13 @@ func main() {
 	room := newRoom()
 	go room.runRoom()
 
-	fs := http.FileServer(http.Dir("./templates/build"))
-	http.Handle("/", fs)
+	// fs := http.FileServer(http.Dir("./templates/build"))
+	// http.Handle("/", fs)
 
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		roomName := r.URL.Query().Get("room")
 		if roomName == "" {
 			http.Error(w, "Room name is required", http.StatusBadRequest)
