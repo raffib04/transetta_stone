@@ -22,6 +22,12 @@ const Login = ({ onLogin }) => {
       loadRooms();
   }, []);
 
+  const handleRoomKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSubmit();
+    }
+  };
+
   return (
     <div>
       <input
@@ -29,28 +35,12 @@ const Login = ({ onLogin }) => {
         placeholder="Enter username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        style={{
-          background: "white",
-          border: "1px solid gray",
-          borderRadius: "5px",
-          padding: "10px",
-          margin: "10px",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-          width: "200px",
-        }}
+        style={inputStyle}
       />
       <select
         value={language}
         onChange={(e) => setLanguage(e.target.value)}
-        style={{
-          background: "white",
-          border: "1px solid gray",
-          borderRadius: "5px",
-          padding: "10px",
-          margin: "10px",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-          width: "200px",
-        }}
+        style={inputStyle}
       >
         <option value="en">English</option>
         <option value="es">Spanish</option>
@@ -66,27 +56,12 @@ const Login = ({ onLogin }) => {
         placeholder="Enter room name"
         value={room}
         onChange={(e) => setRoom(e.target.value)}
-        style={{
-          background: "white",
-          border: "1px solid gray",
-          borderRadius: "5px",
-          padding: "10px",
-          margin: "10px",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-          width: "200px",
-        }}
+        onKeyDown={handleRoomKeyDown}
+        style={inputStyle}
       />
       <button
         onClick={handleSubmit}
-        style={{
-          background: "white",
-          border: "1px solid gray",
-          borderRadius: "5px",
-          padding: "10px",
-          margin: "10px",
-          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-          width: "200px",
-        }}
+        style={buttonStyle}
       >
         Enter Chat
       </button>
@@ -104,6 +79,21 @@ const Login = ({ onLogin }) => {
       )}
     </div>
   );
+};
+
+const inputStyle = {
+  background: "white",
+  border: "1px solid gray",
+  borderRadius: "5px",
+  padding: "10px",
+  margin: "10px",
+  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+  width: "200px",
+};
+
+const buttonStyle = {
+  ...inputStyle,
+  cursor: "pointer",
 };
 
 export default Login;
