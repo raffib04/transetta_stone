@@ -148,4 +148,3 @@ func (room *Room) getMessages() {
 
 	room.messages = data
 }
-

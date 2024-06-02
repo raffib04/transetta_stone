@@ -11,5 +11,7 @@ FROM gcr.io/distroless/base
 WORKDIR /app
 COPY --from=builder /app/app /app/app
 COPY --from=builder /app/templates /app/templates
+COPY --from=builder /app/data /app/data 
+COPY .env .env  
 EXPOSE 8080
 CMD ["./app"]
