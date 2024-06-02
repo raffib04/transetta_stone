@@ -36,11 +36,13 @@ const Login = ({ onLogin }) => {
 
   return (
     <div>
+      <h1 className="p-5 font-bold text-5xl">Transetta Stone</h1>
       <input
         type="text"
         placeholder="Enter username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
+        onKeyDown={handleRoomKeyDown}
         style={inputStyle}
       />
       <select
@@ -71,7 +73,7 @@ const Login = ({ onLogin }) => {
       >
         Enter Chat
       </button>
-      <h2 style={{ margin: "10px" }}>Active Rooms</h2>
+      <h2 className="p-5 font-bold">Active Rooms</h2>
       {activeRooms.length > 0 ? (
         activeRooms.map((room) => (
           <LobbyCard
@@ -83,7 +85,7 @@ const Login = ({ onLogin }) => {
           />
         ))
       ) : (
-        <p>No active rooms available.</p>
+        <p className="p-4">No active rooms available.</p>
       )}
     </div>
   );

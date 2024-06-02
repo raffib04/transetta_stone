@@ -31,8 +31,6 @@ func main() {
 	port := os.Getenv("MYSQL_PORT")
 	database_name := os.Getenv("MYSQL_DATABASE_NAME")
 
-	fmt.Println("variables:", username, password, hostname, port, database_name)
-
 	connection_string := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", username, password, hostname, port, database_name)
 	db, err = sql.Open("mysql", connection_string)
 	if err != nil {
