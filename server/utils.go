@@ -106,7 +106,6 @@ func filterLanguage(message string, language string) string {
 		var profaneWord string
 		isProfane := isProfane(word, language, &profaneWord)
 		if isProfane {
-			fmt.Print("Profane word found: ", profaneWord)
 			wordLength := len(profaneWord)
 			words[i] = strings.Repeat("*", wordLength)
 		}
