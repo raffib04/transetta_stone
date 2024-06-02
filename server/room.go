@@ -44,6 +44,8 @@ func (room *Room) translateMessage(message []byte) {
 	originalMessage := msg["message"]
 	senderUsername := msg["username"]
 
+	originalMessage = filterLanguage(originalMessage, originalLanguage)
+
 	// store message to database
 	_, err = db.Exec("INSERT INTO messages (room_id, text, original_language, creator_name, created_at) VALUES (?, ?, ?, ?, ?);", room.id, originalMessage, originalLanguage, senderUsername, time.Now())
 

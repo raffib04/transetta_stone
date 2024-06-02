@@ -95,7 +95,6 @@ func main() {
 		translated_history := translator(messages, language)
 
 		// send to user
-
 		w.Write(translated_history)
 	})
 
